@@ -1,0 +1,163 @@
+generator client {
+  provider        = "prisma-client-js"
+  previewFeatures = ["interactiveTransactions", "fullTextSearch"]
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+enum ROLE {
+  ADMIN
+  STAFF
+  EDITOR
+}
+
+model user {
+  id                 String             @id @default(uuid())
+  email              String?
+  phone              String?
+  avatar             String?
+  fullName           String?
+  password           String?
+  resetPasswordToken String?
+  role               ROLE
+  address            String?
+  staffCode          String?            @unique
+  dateOfBirth        String?
+  status             Boolean            @default(true)
+  created_at         DateTime           @default(now())
+  updated_at         DateTime           @updatedAt
+  deleted            Boolean            @default(false)
+  dependent_person   Int                @default(0)
+  checkin_logs       checkin_logs[]
+  file_record_user   file_record_user[]
+  table_for_test     table_for_test[]
+  player_info        player_info[]
+  voice_record       voice_record[]
+}
+
+model position {
+  id                      String   @id @default(uuid())
+  cost_salary             Float
+  bonus_salary            Float
+  name                    String
+  is_insurance            Boolean
+  total_insurance_percent Float    @default(10.5)
+  bhxh_insurance_percent  Float    @default(8)
+  bhyt_insurance_percent  Float    @default(1.5)
+  bhtn_insurance_percent  Float    @default(1)
+  created_at              DateTime @default(now())
+  updated_at              DateTime @updatedAt
+}
+
+model department {
+  id         String   @id @default(uuid())
+  name       String
+  created_at DateTime @default(now())
+  updated_at DateTime @updatedAt
+}
+
+model policy {
+  id         String   @id @default(uuid())
+  title      String?
+  content    String?
+  created_at DateTime @default(now())
+  updated_at DateTime @updatedAt
+}
+
+model news {
+  id         String   @id @default(uuid())
+  title      String?
+  content    String?
+  created_at DateTime @default(now())
+  updated_at DateTime @updatedAt
+}
+
+model checkin_logs {
+  id            String    @id @default(uuid())
+  checkin_time  DateTime?
+  checkout_time DateTime?
+  user          user?     @relation(fields: [userId], references: [id])
+  userId        String?
+  total_hours   Float?    @default(0)
+  created_at    DateTime  @default(now())
+  updated_at    DateTime  @updatedAt
+}
+
+model role {
+  id            String   @id @default(uuid())
+  role_name     String
+  date_modified DateTime @default(now())
+  is_active     Boolean
+  created_at    DateTime @default(now())
+  updated_at    DateTime @updatedAt
+}
+
+model refresh_password {
+  id         String   @id @default(uuid())
+  otp        Int?
+  user_token String?
+  created_at DateTime @default(now())
+  updated_at DateTime @updatedAt
+}
+
+model table_for_test {
+  id         String   @id @default(uuid())
+  text       String
+  user       user?    @relation(fields: [userId], references: [id])
+  created_at DateTime @default(now())
+  updated_at DateTime @updatedAt
+  userId     String?
+}
+
+model file_record_user {
+  id         String   @id @default(uuid())
+  fileUrl    String
+  user       user?    @relation(fields: [userId], references: [id])
+  created_at DateTime @default(now())
+  updated_at DateTime @updatedAt
+  userId     String?
+}
+
+model record_question {
+  id              String         @id @default(uuid())
+  imageUrl        String?
+  created_at      DateTime       @default(now())
+  updated_at      DateTime       @updatedAt
+  questionContent String?
+  reward          Int?
+  index           Int?           @unique
+  lengthRequire   Int?
+  questionType    Int?
+  requireText     requireText[]
+  voice_records   voice_record[]
+}
+
+model requireText {
+  text              String
+  id                String           @id @default(uuid())
+  record            record_question? @relation(fields: [record_questionId], references: [id])
+  record_questionId String?
+}
+
+model player_info {
+  id             String @id @default(uuid())
+  user           user   @relation(fields: [userId], references: [id])
+  userId         String @unique
+  money          Int?
+  currentLevel   Int?
+  currentChapter Int?
+}
+
+model voice_record {
+  id                String           @id @default(uuid())
+  user              user?            @relation(fields: [userId], references: [id])
+  userId            String
+  record            String
+  nameRecord        String?
+  indexRecord       String?
+  record_question   record_question? @relation(fields: [record_questionId], references: [id])
+  record_questionId String?
+}
