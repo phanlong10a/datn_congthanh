@@ -18,9 +18,14 @@ export class PlayerInfoService {
     return data;
   }
 
-  findAll() {
-    return `This action returns all playerInfo`;
-  }
+  async findAll() {
+    const data = await this.prisma.player_info.findMany({
+      orderBy: {
+        money: 'desc',
+      },
+    });
+    return data;
+
 
   async findOne(id: string) {
     const data = await this.prisma.player_info.findUnique({

@@ -18,6 +18,21 @@ export class VoiceRecordService {
         userId: createRequireTextDto.userId,
       },
     });
+
+    const user = await this.prisma.player_info.findFirstOrThrow({
+      where: {
+        userId: createRequireTextDto.userId,
+      },
+    });
+
+    this.prisma.player_info.update({
+      where: {
+        id: user.id,
+      },
+      data: {
+        money: user.money + 10,
+      },
+    });
     return data;
   }
 
