@@ -23,17 +23,17 @@ export class PlayerInfoService {
       orderBy: {
         money: 'desc',
       },
-      include:{
-        user:true
-      }
+      include: {
+        user: true,
+      },
     });
-    return data.map((item)=>{
+    return data.map((item) => {
       const email = item.user.email;
-      delete item.user
+      delete item.user;
       return {
         ...item,
-        email
-      }
+        email,
+      };
     });
   }
 

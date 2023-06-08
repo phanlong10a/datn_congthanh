@@ -25,7 +25,7 @@ export class VoiceRecordService {
       },
     });
 
-    this.prisma.player_info.update({
+    await this.prisma.player_info.update({
       where: {
         id: user.id,
       },
