@@ -25,7 +25,7 @@ export class PlayerInfoService {
       },
     });
     return data;
-
+  }
 
   async findOne(id: string) {
     const data = await this.prisma.player_info.findUnique({
