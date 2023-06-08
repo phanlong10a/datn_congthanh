@@ -23,8 +23,18 @@ export class PlayerInfoService {
       orderBy: {
         money: 'desc',
       },
+      include:{
+        user:true
+      }
     });
-    return data;
+    return data.map((item)=>{
+      const email = item.user.email;
+      delete item.user
+      return {
+        ...item,
+        email
+      }
+    });
   }
 
   async findOne(id: string) {
